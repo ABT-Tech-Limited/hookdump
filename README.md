@@ -28,13 +28,13 @@ Webhook debugging tools like RequestBin and Webhook.site are **closed-source Saa
 
 **Hookdump is different:**
 
-| Feature | RequestBin | Webhook.site | Hookdump |
-|---------|------------|--------------|----------|
-| Open Source | No | No | **Yes** |
-| Self-Hostable | No | No | **Yes** |
-| Data Privacy | Their servers | Their servers | **Your servers** |
-| Free Tier Limits | Limited | Limited | **Unlimited** |
-| Replay Webhooks | No | Paid | **Yes** |
+| Feature          | RequestBin    | Webhook.site  | Hookdump         |
+| ---------------- | ------------- | ------------- | ---------------- |
+| Open Source      | No            | No            | **Yes**          |
+| Self-Hostable    | No            | No            | **Yes**          |
+| Data Privacy     | Their servers | Their servers | **Your servers** |
+| Free Tier Limits | Limited       | Limited       | **Unlimited**    |
+| Replay Webhooks  | No            | Paid          | **Yes**          |
 
 > **Your webhook data stays on your infrastructure.** Perfect for teams handling sensitive data, compliance requirements, or air-gapped environments.
 
@@ -111,11 +111,11 @@ services:
 
 ### Configuration
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `PORT` | `3000` | Backend port |
-| `DATABASE_PATH` | `./data/hookdump.db` | SQLite path |
-| `MAX_EVENTS_PER_HOOK` | `100` | Event retention limit |
+| Variable              | Default              | Description           |
+| --------------------- | -------------------- | --------------------- |
+| `PORT`                | `3000`               | Backend port          |
+| `DATABASE_PATH`       | `./data/hookdump.db` | SQLite path           |
+| `MAX_EVENTS_PER_HOOK` | `100`                | Event retention limit |
 
 ## Architecture
 

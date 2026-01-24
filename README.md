@@ -37,6 +37,7 @@ Webhook debugging tools like RequestBin and Webhook.site are **closed-source Saa
 | Replay Webhooks    | No            | $9/mo         | **Free**         |
 | Custom Response    | No            | $9/mo         | **Free**         |
 | Webhook Forwarding | No            | $9/mo         | **Free**         |
+| Monitor (Alerts)   | No            | $9/mo         | **Free**         |
 
 > **Your webhook data stays on your infrastructure.** Perfect for teams handling sensitive data, compliance requirements, or air-gapped environments.
 
@@ -51,6 +52,7 @@ Webhook debugging tools like RequestBin and Webhook.site are **closed-source Saa
 - **Replay** - Re-send captured webhooks to any target URL
 - **Custom Response** - Configure status code, headers, and body for webhook responses
 - **Webhook Forwarding** - Forward incoming webhooks to localhost or any URL (like ngrok)
+- **Monitor** - Get email alerts when webhooks stop arriving
 - **Store** - SQLite-based storage, no external database needed
 - **Self-Host** - One command Docker deployment
 

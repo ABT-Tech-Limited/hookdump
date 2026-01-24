@@ -95,4 +95,15 @@ export function initDatabase() {
   addColumnIfNotExists("events", "forward_status_code", "INTEGER");
   addColumnIfNotExists("events", "forward_response_body", "TEXT");
   addColumnIfNotExists("events", "forward_error", "TEXT");
+
+  // Monitor columns
+  addColumnIfNotExists(
+    "hooks",
+    "monitor_enabled",
+    "INTEGER NOT NULL DEFAULT 0"
+  );
+  addColumnIfNotExists("hooks", "monitor_timeout_minutes", "INTEGER");
+  addColumnIfNotExists("hooks", "monitor_notify_email", "TEXT");
+  addColumnIfNotExists("hooks", "monitor_last_alert_at", "TEXT");
+  addColumnIfNotExists("hooks", "last_event_at", "TEXT");
 }

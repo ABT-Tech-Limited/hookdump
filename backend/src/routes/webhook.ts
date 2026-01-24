@@ -105,6 +105,12 @@ export async function webhookRoutes(fastify: FastifyInstance) {
       createdAt: now,
     });
 
+    // Update lastEventAt for monitoring
+    await db
+      .update(hooks)
+      .set({ lastEventAt: now })
+      .where(eq(hooks.id, hookId));
+
     // Ring buffer: delete oldest events if over limit
     const eventCount = await db
       .select({ count: count() })

@@ -108,6 +108,11 @@ export function HookList({
                       Forwarding enabled
                     </div>
                   )}
+                  {hook.monitorEnabled && (
+                    <div style={{ fontSize: "11px", color: "#22c55e", marginTop: "2px" }}>
+                      Monitoring ({hook.monitorTimeoutMinutes}m)
+                    </div>
+                  )}
                 </div>
                 <div style={{ display: "flex", gap: "4px" }}>
                   <button

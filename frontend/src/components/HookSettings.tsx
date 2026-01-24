@@ -18,6 +18,16 @@ export function HookSettings({ hook, onClose, onUpdate }: HookSettingsProps) {
     JSON.stringify(hook.responseHeaders, null, 2)
   );
   const [forwardUrl, setForwardUrl] = useState(hook.forwardUrl || "");
+
+  // Monitor settings
+  const [monitorEnabled, setMonitorEnabled] = useState(hook.monitorEnabled);
+  const [monitorTimeoutMinutes, setMonitorTimeoutMinutes] = useState(
+    hook.monitorTimeoutMinutes?.toString() || "60"
+  );
+  const [monitorNotifyEmail, setMonitorNotifyEmail] = useState(
+    hook.monitorNotifyEmail || ""
+  );
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,6 +37,9 @@ export function HookSettings({ hook, onClose, onUpdate }: HookSettingsProps) {
     setResponseBody(hook.responseBody);
     setResponseHeaders(JSON.stringify(hook.responseHeaders, null, 2));
     setForwardUrl(hook.forwardUrl || "");
+    setMonitorEnabled(hook.monitorEnabled);
+    setMonitorTimeoutMinutes(hook.monitorTimeoutMinutes?.toString() || "60");
+    setMonitorNotifyEmail(hook.monitorNotifyEmail || "");
   }, [hook]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -53,12 +66,28 @@ export function HookSettings({ hook, onClose, onUpdate }: HookSettingsProps) {
         return;
       }
 
+      const timeoutMins = parseInt(monitorTimeoutMinutes, 10);
+      if (monitorEnabled && (isNaN(timeoutMins) || timeoutMins < 1 || timeoutMins > 1440)) {
+        setError("Timeout must be between 1 and 1440 minutes");
+        setIsLoading(false);
+        return;
+      }
+
+      if (monitorEnabled && !monitorNotifyEmail.trim()) {
+        setError("Email is required when monitoring is enabled");
+        setIsLoading(false);
+        return;
+      }
+
       const updatedHook = await api.updateHook(hook.id, {
         name,
         responseStatusCode: statusCode,
         responseBody,
         responseHeaders: parsedHeaders,
         forwardUrl: forwardUrl.trim() || null,
+        monitorEnabled,
+        monitorTimeoutMinutes: monitorEnabled ? timeoutMins : null,
+        monitorNotifyEmail: monitorEnabled ? monitorNotifyEmail.trim() : null,
       });
 
       onUpdate(updatedHook);
@@ -164,6 +193,63 @@ export function HookSettings({ hook, onClose, onUpdate }: HookSettingsProps) {
                 Incoming webhooks will be forwarded to this URL (like ngrok)
               </small>
             </div>
+
+            <h3 style={{ marginTop: "24px", marginBottom: "16px", color: "#22c55e", fontSize: "14px" }}>
+              Monitor (Get alerted when webhooks stop)
+            </h3>
+
+            <div className="form-group">
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  cursor: "pointer",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={monitorEnabled}
+                  onChange={(e) => setMonitorEnabled(e.target.checked)}
+                  style={{ width: "18px", height: "18px" }}
+                />
+                Enable Monitoring
+              </label>
+              <small style={{ color: "#666", display: "block", marginTop: "4px" }}>
+                Get notified when no webhooks are received within the timeout period
+              </small>
+            </div>
+
+            {monitorEnabled && (
+              <>
+                <div className="form-group">
+                  <label>Timeout (minutes)</label>
+                  <input
+                    type="number"
+                    className="input"
+                    value={monitorTimeoutMinutes}
+                    onChange={(e) => setMonitorTimeoutMinutes(e.target.value)}
+                    min="1"
+                    max="1440"
+                    style={{ width: "120px" }}
+                  />
+                  <small style={{ color: "#666", display: "block", marginTop: "4px" }}>
+                    Alert if no webhook received within this time (1-1440 minutes)
+                  </small>
+                </div>
+
+                <div className="form-group">
+                  <label>Notification Email</label>
+                  <input
+                    type="email"
+                    className="input"
+                    value={monitorNotifyEmail}
+                    onChange={(e) => setMonitorNotifyEmail(e.target.value)}
+                    placeholder="alerts@example.com"
+                  />
+                </div>
+              </>
+            )}
           </div>
           <div className="modal-footer">
             <button

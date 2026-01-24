@@ -19,6 +19,12 @@ export const HookSchema = z.object({
   responseBody: z.string(),
   // Forwarding configuration
   forwardUrl: z.string().nullable(),
+  // Monitor configuration
+  monitorEnabled: z.boolean(),
+  monitorTimeoutMinutes: z.number().nullable(),
+  monitorNotifyEmail: z.string().nullable(),
+  monitorLastAlertAt: z.string().nullable(),
+  lastEventAt: z.string().nullable(),
   createdAt: z.string(),
 });
 
@@ -62,6 +68,10 @@ export const CreateHookRequestSchema = z.object({
   responseHeaders: z.record(z.string()).optional().default({}),
   responseBody: z.string().optional().default(""),
   forwardUrl: z.string().url().nullable().optional().default(null),
+  // Monitor configuration
+  monitorEnabled: z.boolean().optional().default(false),
+  monitorTimeoutMinutes: z.number().min(1).max(1440).nullable().optional().default(null),
+  monitorNotifyEmail: z.string().email().nullable().optional().default(null),
 });
 
 // Use z.input for the request type (allows optional fields)
@@ -73,6 +83,10 @@ export const UpdateHookRequestSchema = z.object({
   responseHeaders: z.record(z.string()).optional(),
   responseBody: z.string().optional(),
   forwardUrl: z.string().url().nullable().optional(),
+  // Monitor configuration
+  monitorEnabled: z.boolean().optional(),
+  monitorTimeoutMinutes: z.number().min(1).max(1440).nullable().optional(),
+  monitorNotifyEmail: z.string().email().nullable().optional(),
 });
 
 export type UpdateHookRequest = z.infer<typeof UpdateHookRequestSchema>;

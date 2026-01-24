@@ -9,6 +9,12 @@ export const hooks = sqliteTable("hooks", {
   responseBody: text("response_body").notNull().default(""),
   // Forwarding configuration
   forwardUrl: text("forward_url"),
+  // Monitor configuration
+  monitorEnabled: integer("monitor_enabled", { mode: "boolean" }).notNull().default(false),
+  monitorTimeoutMinutes: integer("monitor_timeout_minutes"),
+  monitorNotifyEmail: text("monitor_notify_email"),
+  monitorLastAlertAt: text("monitor_last_alert_at"),
+  lastEventAt: text("last_event_at"),
   createdAt: text("created_at").notNull(),
 });
 

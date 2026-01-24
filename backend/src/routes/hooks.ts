@@ -27,6 +27,9 @@ export async function hookRoutes(fastify: FastifyInstance) {
       responseHeaders,
       responseBody,
       forwardUrl,
+      monitorEnabled,
+      monitorTimeoutMinutes,
+      monitorNotifyEmail,
     } = parseResult.data;
     const id = ulid();
     const now = new Date().toISOString();
@@ -38,6 +41,9 @@ export async function hookRoutes(fastify: FastifyInstance) {
       responseHeaders: JSON.stringify(responseHeaders ?? {}),
       responseBody: responseBody ?? "",
       forwardUrl: forwardUrl ?? null,
+      monitorEnabled: monitorEnabled ?? false,
+      monitorTimeoutMinutes: monitorTimeoutMinutes ?? null,
+      monitorNotifyEmail: monitorNotifyEmail ?? null,
       createdAt: now,
     });
 
@@ -48,6 +54,11 @@ export async function hookRoutes(fastify: FastifyInstance) {
       responseHeaders: responseHeaders ?? {},
       responseBody: responseBody ?? "",
       forwardUrl: forwardUrl ?? null,
+      monitorEnabled: monitorEnabled ?? false,
+      monitorTimeoutMinutes: monitorTimeoutMinutes ?? null,
+      monitorNotifyEmail: monitorNotifyEmail ?? null,
+      monitorLastAlertAt: null,
+      lastEventAt: null,
       createdAt: now,
     };
 
@@ -68,6 +79,11 @@ export async function hookRoutes(fastify: FastifyInstance) {
       responseHeaders: JSON.parse(h.responseHeaders),
       responseBody: h.responseBody,
       forwardUrl: h.forwardUrl,
+      monitorEnabled: h.monitorEnabled,
+      monitorTimeoutMinutes: h.monitorTimeoutMinutes,
+      monitorNotifyEmail: h.monitorNotifyEmail,
+      monitorLastAlertAt: h.monitorLastAlertAt,
+      lastEventAt: h.lastEventAt,
       createdAt: h.createdAt,
     }));
 
@@ -100,6 +116,11 @@ export async function hookRoutes(fastify: FastifyInstance) {
       responseHeaders: JSON.parse(hook.responseHeaders),
       responseBody: hook.responseBody,
       forwardUrl: hook.forwardUrl,
+      monitorEnabled: hook.monitorEnabled,
+      monitorTimeoutMinutes: hook.monitorTimeoutMinutes,
+      monitorNotifyEmail: hook.monitorNotifyEmail,
+      monitorLastAlertAt: hook.monitorLastAlertAt,
+      lastEventAt: hook.lastEventAt,
       createdAt: hook.createdAt,
     };
 
@@ -145,6 +166,12 @@ export async function hookRoutes(fastify: FastifyInstance) {
     if (data.responseBody !== undefined)
       updates.responseBody = data.responseBody;
     if (data.forwardUrl !== undefined) updates.forwardUrl = data.forwardUrl;
+    if (data.monitorEnabled !== undefined)
+      updates.monitorEnabled = data.monitorEnabled;
+    if (data.monitorTimeoutMinutes !== undefined)
+      updates.monitorTimeoutMinutes = data.monitorTimeoutMinutes;
+    if (data.monitorNotifyEmail !== undefined)
+      updates.monitorNotifyEmail = data.monitorNotifyEmail;
 
     if (Object.keys(updates).length > 0) {
       await db.update(hooks).set(updates).where(eq(hooks.id, hookId));
@@ -163,6 +190,11 @@ export async function hookRoutes(fastify: FastifyInstance) {
       responseHeaders: JSON.parse(updatedHook!.responseHeaders),
       responseBody: updatedHook!.responseBody,
       forwardUrl: updatedHook!.forwardUrl,
+      monitorEnabled: updatedHook!.monitorEnabled,
+      monitorTimeoutMinutes: updatedHook!.monitorTimeoutMinutes,
+      monitorNotifyEmail: updatedHook!.monitorNotifyEmail,
+      monitorLastAlertAt: updatedHook!.monitorLastAlertAt,
+      lastEventAt: updatedHook!.lastEventAt,
       createdAt: updatedHook!.createdAt,
     };
 

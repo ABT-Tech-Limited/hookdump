@@ -6,6 +6,7 @@ import { webhookRoutes } from "./routes/webhook.js";
 import { hookRoutes } from "./routes/hooks.js";
 import { eventRoutes } from "./routes/events.js";
 import { replayRoutes } from "./routes/replay.js";
+import { startMonitorService } from "./services/monitor.js";
 
 const fastify = Fastify({
   logger: true,
@@ -75,6 +76,9 @@ try {
   Server running at http://${config.host}:${config.port}
   Health check: http://${config.host}:${config.port}/health
   `);
+
+  // Start background monitor service
+  startMonitorService();
 } catch (err) {
   fastify.log.error(err);
   process.exit(1);

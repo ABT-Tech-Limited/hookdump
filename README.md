@@ -28,13 +28,15 @@ Webhook debugging tools like RequestBin and Webhook.site are **closed-source Saa
 
 **Hookdump is different:**
 
-| Feature          | RequestBin    | Webhook.site  | Hookdump         |
-| ---------------- | ------------- | ------------- | ---------------- |
-| Open Source      | No            | No            | **Yes**          |
-| Self-Hostable    | No            | No            | **Yes**          |
-| Data Privacy     | Their servers | Their servers | **Your servers** |
-| Free Tier Limits | Limited       | Limited       | **Unlimited**    |
-| Replay Webhooks  | No            | Paid          | **Yes**          |
+| Feature            | RequestBin    | Webhook.site  | Hookdump         |
+| ------------------ | ------------- | ------------- | ---------------- |
+| Open Source        | No            | No            | **Yes**          |
+| Self-Hostable      | No            | No            | **Yes**          |
+| Data Privacy       | Their servers | Their servers | **Your servers** |
+| Free Tier Limits   | Limited       | Limited       | **Unlimited**    |
+| Replay Webhooks    | No            | $9/mo         | **Free**         |
+| Custom Response    | No            | $9/mo         | **Free**         |
+| Webhook Forwarding | No            | $9/mo         | **Free**         |
 
 > **Your webhook data stays on your infrastructure.** Perfect for teams handling sensitive data, compliance requirements, or air-gapped environments.
 
@@ -47,6 +49,8 @@ Webhook debugging tools like RequestBin and Webhook.site are **closed-source Saa
 - **Receive** - Create unique webhook URLs instantly
 - **Inspect** - View headers, body, and metadata in a clean 3-pane UI
 - **Replay** - Re-send captured webhooks to any target URL
+- **Custom Response** - Configure status code, headers, and body for webhook responses
+- **Webhook Forwarding** - Forward incoming webhooks to localhost or any URL (like ngrok)
 - **Store** - SQLite-based storage, no external database needed
 - **Self-Host** - One command Docker deployment
 
@@ -87,6 +91,35 @@ curl -X POST http://localhost:8080/hooks/{hookId} \
 
 4. **View** the captured request in the UI
 5. **Replay** to forward the request to another endpoint
+
+### Custom Response
+
+Configure what your webhook endpoint returns (Webhook.site charges $9/mo for this):
+
+```bash
+curl -X PATCH http://localhost:8080/api/hooks/{hookId} \
+  -H "Content-Type: application/json" \
+  -d '{
+    "responseStatusCode": 201,
+    "responseHeaders": {"X-Custom": "Header"},
+    "responseBody": "{\"success\": true}"
+  }'
+```
+
+### Webhook Forwarding
+
+Forward incoming webhooks to your local development server (like ngrok, but free):
+
+```bash
+curl -X PATCH http://localhost:8080/api/hooks/{hookId} \
+  -H "Content-Type: application/json" \
+  -d '{"forwardUrl": "http://localhost:3000/webhook"}'
+```
+
+Now webhooks sent to Hookdump will be:
+1. Stored for inspection
+2. Forwarded to your local server
+3. Forward response recorded for debugging
 
 ## Self-Hosting
 
@@ -145,6 +178,8 @@ hookdump/
 ### Management API
 - `POST /api/hooks` - Create hook
 - `GET /api/hooks` - List hooks
+- `GET /api/hooks/:hookId` - Get hook details
+- `PATCH /api/hooks/:hookId` - Update hook (custom response, forwarding URL)
 - `DELETE /api/hooks/:hookId` - Delete hook
 - `GET /api/hooks/:hookId/events` - List events
 - `GET /api/events/:eventId` - Get event details

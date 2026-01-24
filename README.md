@@ -4,9 +4,9 @@
     <strong>Open-source webhook debugger. Receive, inspect, and replay webhooks.</strong>
   </p>
   <p align="center">
+    <a href="https://hookdump.dev">Website</a> •
     <a href="#quick-start">Quick Start</a> •
     <a href="#features">Features</a> •
-    <a href="#why-hookdump">Why Hookdump</a> •
     <a href="#self-hosting">Self-Hosting</a>
   </p>
 </p>
@@ -154,5 +154,5 @@ MIT - See [LICENSE](LICENSE) for details.
 ---
 
 <p align="center">
-  <sub>Built for developers who care about data privacy.</sub>
+  <a href="https://hookdump.dev">hookdump.dev</a> — Built for developers who care about data privacy.
 </p>

@@ -27,6 +27,28 @@ services:
       - backend
     restart: unless-stopped
 
+  app:
+    profiles:
+      - all-in-one
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_PATH=/app/data/hookdump.db
+      - MAX_EVENTS_PER_HOOK=100
+      - PORT=3000
+      - HOST=0.0.0.0
+    volumes:
+      - ./data:/app/data
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   tunnel:
     image: cloudflare/cloudflared
     restart: unless-stopped

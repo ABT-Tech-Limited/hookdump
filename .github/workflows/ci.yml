@@ -56,3 +56,11 @@ jobs:
           file: ./frontend/Dockerfile
           push: false
           tags: hookdump-frontend:test
+
+      - name: Build all-in-one image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+          tags: hookdump:test

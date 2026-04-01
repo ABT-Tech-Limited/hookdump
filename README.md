@@ -67,10 +67,12 @@ Webhook debugging tools like RequestBin and Webhook.site are **closed-source Saa
 # Clone and start
 git clone https://github.com/orangekame3/hookdump.git
 cd hookdump
-docker compose up -d
+docker compose --profile all-in-one up -d app
 
 # Open http://localhost:8080
 ```
+
+For the existing split deployment, use `docker compose up -d`.
 
 ### Local Development
 
@@ -166,7 +168,14 @@ Events will show a Valid / Invalid badge to help debug webhook authentication is
 
 ## Self-Hosting
 
-### Docker Compose (Local)
+### Docker Compose (Single Container, Recommended)
+
+```bash
+docker compose --profile all-in-one up -d app
+# Open http://localhost:8080
+```
+
+### Docker Compose (Split Frontend / Backend)
 
 ```bash
 docker compose up -d
@@ -185,11 +194,36 @@ Expose to the internet for free using Cloudflare Tunnel:
 cp .env.example .env
 # Edit .env and set TUNNEL_TOKEN
 
-# 4. Run with tunnel profile
-docker compose --profile tunnel up -d
+# 4. Run all-in-one app with tunnel
+docker compose --profile all-in-one --profile tunnel up -d app tunnel
 ```
 
-### Docker Compose (Cloud)
+### Docker Run (Single Container)
+
+```bash
+docker run -d \
+  --name hookdump \
+  -p 8080:80 \
+  -v "$(pwd)/data:/app/data" \
+  -e MAX_EVENTS_PER_HOOK=100 \
+  ghcr.io/orangekame3/hookdump:latest
+```
+
+### Docker Compose (Cloud, Single Container)
+
+```yaml
+services:
+  app:
+    image: ghcr.io/orangekame3/hookdump:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - MAX_EVENTS_PER_HOOK=100
+```
+
+### Docker Compose (Cloud, Split Images)
 
 ```yaml
 services:
@@ -222,6 +256,8 @@ services:
 
 ```
 hookdump/
+├── Dockerfile    # All-in-one Docker image
+├── docker/       # All-in-one nginx + startup scripts
 ├── shared/      # Zod schemas (TypeScript types)
 ├── backend/     # Fastify + Drizzle ORM + SQLite
 ├── frontend/    # React + Vite
